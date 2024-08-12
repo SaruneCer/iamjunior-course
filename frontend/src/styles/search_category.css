@@ -17,3 +17,9 @@
   font-size: 24px;
   margin-bottom: 32px;
 }
+
+.search_category_container .service_list{
+  display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}

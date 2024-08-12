@@ -15,6 +15,14 @@
   cursor: pointer;
   margin-bottom: 16px;
   border: none;
+
+}
+
+.category_card:hover {
+  background-color: #f7f4fd;
+  transition: 300ms;
+  cursor: pointer;
+
 }
 
 .category_name {
@@ -37,6 +45,12 @@
 }
 
 .category_card.vertical.active_category_card {
+  border-color: #beaaf5;
+  color: #9977ef;
+  background-color: #f2eefd;
+}
+
+.category_card.category_card.vertical:hover {
   border-color: #beaaf5;
   color: #9977ef;
   background-color: #f2eefd;
