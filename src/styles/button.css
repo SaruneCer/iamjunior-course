@@ -1,0 +1,16 @@
+.basic_button {
+  background-color: #8056eb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  padding: 16px 24px;
+  cursor: pointer;
+}
+
+.round_button {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: none;
+}
