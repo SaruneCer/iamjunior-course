@@ -1,127 +1,214 @@
 const express = require("express");
 const cors = require("cors");
-
 const app = express();
+const { PORT, connectToDb } = require("./db");
+const Booking = require("./schemas/Booking"); 
+const Business = require("./schemas/Business");
 
 app.use(cors());
 app.use(express.json());
 
-const data = {
-    categories: [
-      {
-        id: 1,
-        name: "Food",
-        bgcolor: { hex: "#f00" },
-        icon: { url: "http://example.com/icon1.png" },
-      },
-      {
-        id: 2,
-        name: "Retail",
-        bgcolor: { hex: "#0f0" },
-        icon: { url: "http://example.com/icon2.png" },
-      },
-    ],
-    businesses: [
-      {
-        id: 1,
-        name: "Business One",
-        about: "Description One",
-        address: "Address One",
-        category: "Food",
-        contactPerson: "Person One",
-        email: "email@example.com",
-        images: [{ url: "http://example.com/image1.png" }],
-      },
-      {
-        id: 2,
-        name: "Business Two",
-        about: "Description Two",
-        address: "Address Two",
-        category: "Retail",
-        contactPerson: "Person Two",
-        email: "email2@example.com",
-        images: [{ url: "http://example.com/image2.png" }],
-      },
-    ],
-    bookings: [],
-};
-  
+connectToDb().then(() => {
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+});
 
-// Categories
-app.get("/categories", (req, res) => {
-    res.json(data.categories);
+const data = {
+  categories: [
+    {
+      id: 1,
+      name: "Food",
+      bgcolor: { hex: "#f00" },
+      icon: { url: "http://example.com/icon1.png" },
+    },
+    {
+      id: 2,
+      name: "Retail",
+      bgcolor: { hex: "#0f0" },
+      icon: { url: "http://example.com/icon2.png" },
+    },
+  ],
+  bookings: [],
+};
+
+//businesses
+
+app.get("/businesses", async (req, res) => {
+  try {
+    const businesses = await Business.find();
+    res.json(businesses);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+app.get("/businesses/:id", async (req, res) => {
+    try {
+      const business = await Business.findById(req.params.id);
+      if (business) {
+        res.json(business);
+      } else {
+        res.status(404).send("Business not found");
+      }
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
   });
-  
-  app.post("/categories", (req, res) => {
-    const newCategory = {
-      id: data.categories.length + 1,
-      ...req.body,
-    };
-    data.categories.push(newCategory);
-    res.status(201).json(newCategory);
-  });
-  
-  // Businesses
-  app.get("/businesses", (req, res) => {
-    res.json(data.businesses);
-  });
-  
-  app.get("/businesses/category/:category", (req, res) => {
-    const filteredBusinesses = data.businesses.filter(
-      (b) => b.category.toLowerCase() === req.params.category.toLowerCase()
-    );
-    res.json(filteredBusinesses);
-  });
-  
-  app.get("/businesses/:id", (req, res) => {
-    const business = data.businesses.find((b) => b.id == req.params.id);
-    if (business) {
-      res.json(business);
-    } else {
-      res.status(404).send("Business not found");
+
+  app.get("/businesses/category/:category", async (req, res) => {
+    try {
+      const category = req.params.category.toLowerCase();
+      const businesses = await Business.find({ category: new RegExp(`^${category}$`, 'i') });
+      res.json(businesses);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
   });
   
-  app.get("/businesses/:businessId/bookings/date/:date", (req, res) => {
-    const slots = data.bookings.filter(
-      (b) => b.businessId == req.params.businessId && b.date === req.params.date
+
+app.post("/businesses", async (req, res) => {
+  const newBusiness = new Business(req.body);
+  try {
+    const savedBusiness = await newBusiness.save();
+    res.status(201).json(savedBusiness);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+});
+
+app.put("/businesses/:id", async (req, res) => {
+  try {
+    const updatedBusiness = await Business.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        new: true,
+      }
     );
-    res.json(slots);
+    res.json(updatedBusiness);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.delete("/businesses/:id", async (req, res) => {
+  try {
+    const deletedBusiness = await Business.findByIdAndDelete(
+      req.params.id,
+      req.body,
+      {
+        new: true,
+      }
+    );
+    res.json(deletedBusiness);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+
+
+app.get("/businesses/:businessId/bookings/date/:date", async (req, res) => {
+  try {
+    const { businessId, date } = req.params;
+    const bookings = await Booking.find({ businessId, date });
+    res.json(bookings);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+// Categories
+app.get("/categories", async (req, res) => {
+    try {
+      const categories = await Category.find();
+      res.json(categories);
+    } catch (error) {
+      res.status(500).json(error);
+    }
   });
   
-  // Bookings
-  app.post("/bookings", (req, res) => {
+
+  app.post("/categories", async (req, res) => {
+    const newCategory = new Category(req.body);
+    try {
+      const savedCategory = await newCategory.save();
+      res.status(201).json(savedCategory);
+    } catch (error) {
+      res.status(400).json(error);
+    }
+  });
+
+
+  app.put("/categories/:id", async (req, res) => {
+    try {
+      const updatedCategory = await Category.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        {
+          new: true,
+        }
+      );
+      res.json(updatedCategory);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
+  
+  app.delete("/categories/:id", async (req, res) => {
+    try {
+      const deletedCategory = await Category.findByIdAndDelete(req.params.id);
+      res.json(deletedCategory);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+  
+  
+
+// Bookings
+app.post("/bookings", async (req, res) => {
     const { businessId, date, time, userEmail, userName } = req.body;
-    const newBooking = {
-      id: data.bookings.length + 1,
+  
+    const newBooking = new Booking({
       businessId,
       date,
       time,
       userEmail,
       userName,
-      status: "Booked",
-    };
-    data.bookings.push(newBooking);
-    res.status(201).json(newBooking);
-  });
+      status: "confirmed", 
+    });
   
-  app.get("/bookings/user/:email", (req, res) => {
-    const userBookings = data.bookings.filter(
-      (b) => b.userEmail === req.params.email
-    );
-    res.json(userBookings);
-  });
-  
-  app.delete("/bookings/:id", (req, res) => {
-    const index = data.bookings.findIndex((b) => b.id == req.params.id);
-    if (index !== -1) {
-      data.bookings.splice(index, 1);
-      res.send("Booking deleted");
-    } else {
-      res.status(404).send("Booking not found");
+    try {
+      const savedBooking = await newBooking.save();
+      res.status(201).json(savedBooking);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
     }
   });
+  
 
-app.listen(8080, () => {
-    console.log("Server started");
+  app.get("/bookings/user/:email", async (req, res) => {
+    try {
+      const userBookings = await Booking.find({ userEmail: req.params.email });
+      res.json(userBookings);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
   });
+  
+
+  app.delete("/bookings/:id", async (req, res) => {
+    try {
+      const deletedBooking = await Booking.findByIdAndDelete(req.params.id);
+      if (deletedBooking) {
+        res.send("Booking deleted");
+      } else {
+        res.status(404).send("Booking not found");
+      }
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+  
