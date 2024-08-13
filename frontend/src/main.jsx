@@ -6,6 +6,7 @@ import { Services } from './pages/Services.jsx';
 import { ROUTES } from './router/pageRoutes.js';
 import { Error } from './pages/Error.jsx';
 import { SearchCategory } from './pages/SearchCategory.jsx';
+import { Login } from './pages/Login.jsx';
 import ReactDOM from "react-dom/client";
 import App from './App.jsx'
 import './index.css'
@@ -30,6 +31,10 @@ const router = createBrowserRouter([{
     {
       path: ROUTES.SEARCH_CATEGORY,
       element: <SearchCategory/>
+    },
+    {
+      path: ROUTES.LOGIN,
+      element: <Login/>
     }
   ]
 }])
