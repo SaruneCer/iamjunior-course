@@ -1,41 +1,41 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const bookingSchema = new mongoose.Schema({
   businessId: {
     type: mongoose.Schema.Types.ObjectId,
-    required: true, 
+    required: true,
   },
   date: {
     type: Date,
-    required: [true, "field is required. e.g. 2022-04-28"], 
+    required: [true, 'field is required. e.g. 2022-04-28'],
   },
   time: {
     type: String,
-    required: [true, "field is required. e.g. 14:00"], 
+    required: [true, 'field is required. e.g. 14:00'],
   },
   userEmail: {
     type: String,
-    required: [true, "field is required."], 
+    required: [true, 'field is required.'],
     validate: {
       validator: function (email) {
         return /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email);
       },
-      message: (props) => `${props.value} is not a valid email!`, 
+      message: (props) => `${props.value} is not a valid email!`,
     },
   },
   userName: {
     type: String,
-    required: true, 
+    required: true,
   },
   status: {
     type: String,
-    required: [true, "Booking status is required."], 
+    required: [true, 'Booking status is required.'],
     enum: {
-      values: ["confirmed", "pending", "cancelled"],
-      message: "{VALUE} is not supported", 
+      values: ['confirmed', 'pending', 'cancelled'],
+      message: '{VALUE} is not supported',
     },
   },
 });
 
 const Booking = mongoose.model('Booking', bookingSchema);
-module.exports = Booking
+module.exports = Booking;

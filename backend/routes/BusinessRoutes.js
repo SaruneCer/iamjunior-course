@@ -1,9 +1,9 @@
-const express = require("express");
-const Business = require("../schemas/Business");
+const express = require('express');
+const Business = require('../schemas/Business');
 const router = express.Router();
-const authMiddleware = require("../middlewares/authMiddleware");
+const authMiddleware = require('../middlewares/authMiddleware');
 
-router.get("/", authMiddleware, async (req, res) => {
+router.get('/', authMiddleware, async (req, res) => {
   try {
     const businesses = await Business.find();
     res.json(businesses);
@@ -12,24 +12,24 @@ router.get("/", authMiddleware, async (req, res) => {
   }
 });
 
-router.get("/:id", async (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
     const business = await Business.findById(req.params.id);
     if (business) {
       res.json(business);
     } else {
-      res.status(404).send("Business not found");
+      res.status(404).send('Business not found');
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-router.get("/category/:category", async (req, res) => {
+router.get('/category/:category', async (req, res) => {
   try {
     const category = req.params.category.toLowerCase();
     const businesses = await Business.find({
-      category: new RegExp(`^${category}$`, "i"),
+      category: new RegExp(`^${category}$`, 'i'),
     });
     res.json(businesses);
   } catch (error) {
@@ -37,7 +37,7 @@ router.get("/category/:category", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post('/', async (req, res) => {
   const newBusiness = new Business(req.body);
   try {
     const savedBusiness = await newBusiness.save();
@@ -47,40 +47,32 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.put("/:id", async (req, res) => {
+router.put('/:id', async (req, res) => {
   try {
-    const updatedBusiness = await Business.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      {
-        new: true,
-      }
-    );
+    const updatedBusiness = await Business.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
     res.json(updatedBusiness);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete('/:id', async (req, res) => {
   try {
-    const deletedBusiness = await Business.findByIdAndDelete(
-      req.params.id,
-      req.body,
-      {
-        new: true,
-      }
-    );
+    const deletedBusiness = await Business.findByIdAndDelete(req.params.id, req.body, {
+      new: true,
+    });
     res.json(deletedBusiness);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 });
 
-router.get("/:businessId/bookings/date/:date", async (req, res) => {
+router.get('/:businessId/bookings/date/:date', async (req, res) => {
   try {
     const { businessId, date } = req.params;
-    const bookings = await Booking.find({ businessId, date });
+    const bookings = await Business.find({ businessId, date });
     res.json(bookings);
   } catch (error) {
     res.status(500).json({ error: error.message });

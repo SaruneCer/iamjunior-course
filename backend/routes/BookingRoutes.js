@@ -1,9 +1,8 @@
-const express = require("express");
-const Booking = require("../schemas/Booking");
+const express = require('express');
+const Booking = require('../schemas/Booking');
 const router = express.Router();
 
-
-router.post("/", async (req, res) => {
+router.post('/', async (req, res) => {
   const newBooking = new Booking(req.body);
   try {
     const savedBooking = await newBooking.save();
@@ -13,7 +12,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.get("/user/:email", async (req, res) => {
+router.get('/user/:email', async (req, res) => {
   try {
     const userBookings = await Booking.find({ userEmail: req.params.email });
     res.json(userBookings);
@@ -22,13 +21,13 @@ router.get("/user/:email", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete('/:id', async (req, res) => {
   try {
     const deletedBooking = await Booking.findByIdAndDelete(req.params.id);
     if (deletedBooking) {
-      res.send("Booking deleted");
+      res.send('Booking deleted');
     } else {
-      res.status(404).send("Booking not found");
+      res.status(404).send('Booking not found');
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
