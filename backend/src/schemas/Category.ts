@@ -1,6 +1,16 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
-const categoriesSchema = new mongoose.Schema(
+interface ICategory {
+  name: string;
+  bgcolor: {
+    hex: string;
+  };
+  icon: {
+    url: string;
+  };
+}
+
+const categoriesSchema = new mongoose.Schema<ICategory>(
   {
     name: {
       type: String,
@@ -12,10 +22,10 @@ const categoriesSchema = new mongoose.Schema(
         type: String,
         required: [true, 'Background color is required.'],
         validate: {
-          validator: function (hex) {
+          validator: function (hex: string) {
             return /^#[0-9A-F]{6}$/i.test(hex);
           },
-          message: (props) => `${props.value} is not a valid hex color code!`,
+          message: (props: { value: string }) => `${props.value} is not a valid hex color code!`,
         },
       },
     },
@@ -24,10 +34,10 @@ const categoriesSchema = new mongoose.Schema(
         type: String,
         required: [true, 'Icon URL is required.'],
         validate: {
-          validator: function (url) {
+          validator: function (url: string) {
             return /^(http|https):\/\/[^\s$.?#].[^\s]*$/.test(url);
           },
-          message: (props) => `${props.value} is not a valid URL!`,
+          message: (props: { value: string }) => `${props.value} is not a valid URL!`,
         },
       },
     },
@@ -38,5 +48,6 @@ const categoriesSchema = new mongoose.Schema(
   },
 );
 
-const Category = mongoose.model('Category', categoriesSchema);
-module.exports = Category;
+const Category = mongoose.model<ICategory>('Category', categoriesSchema);
+
+export default Category;

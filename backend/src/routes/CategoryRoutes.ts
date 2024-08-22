@@ -1,5 +1,5 @@
-const express = require('express');
-const Category = require('../schemas/Category');
+import express from 'express';
+import Category from '../schemas/Category';
 const router = express.Router();
 
 router.get('/', async (req, res) => {
@@ -7,7 +7,7 @@ router.get('/', async (req, res) => {
     const categories = await Category.find();
     res.json(categories);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: 'Error fetching categories', error: error });
   }
 });
 
@@ -17,7 +17,7 @@ router.post('/', async (req, res) => {
     const savedCategory = await newCategory.save();
     res.status(201).json(savedCategory);
   } catch (error) {
-    res.status(400).json(error);
+    res.status(400).json({ message: 'Error adding new category', error: error });
   }
 });
 
@@ -28,7 +28,7 @@ router.put('/:id', async (req, res) => {
     });
     res.json(updatedCategory);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ message: 'Error editing category', error: error });
   }
 });
 
@@ -37,8 +37,8 @@ router.delete('/:id', async (req, res) => {
     const deletedCategory = await Category.findByIdAndDelete(req.params.id);
     res.json(deletedCategory);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ message: 'Error deleting category', error: error });
   }
 });
 
-module.exports = router;
+export default router;

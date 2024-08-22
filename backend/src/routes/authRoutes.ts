@@ -1,7 +1,7 @@
-const express = require('express');
-const User = require('../schemas/User');
+import express from 'express';
+import User from '../schemas/User'
+import { generateToken } from '../utils/password';
 const router = express.Router();
-const { generateToken } = require('../utils/password');
 
 router.post('/register', async (req, res) => {
   try {
@@ -12,9 +12,9 @@ router.post('/register', async (req, res) => {
     }
     const newUser = new User(user);
     await newUser.save();
-    return res.status.apply(200).json({ message: 'User registered successfully' });
+    return res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
-    return res.status(500).json({ message: 'Error registering user', error: error.message });
+    return res.status(500).json({ message: 'Error registering user', error: (error as Error).message });
   }
 });
 
@@ -36,8 +36,8 @@ router.post('/login', async (req, res) => {
 
     return res.json({ message: 'Logged in', token, existingUser });
   } catch (error) {
-    return res.status(500).json({ message: 'Error loging in user', error: error.message });
+    return res.status(500).json({ message: 'Error logging in user', error: (error as Error).message });
   }
 });
 
-module.exports = router;
+export default router;

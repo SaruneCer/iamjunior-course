@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const bookingSchema = new mongoose.Schema({
   businessId: {
@@ -17,10 +17,10 @@ const bookingSchema = new mongoose.Schema({
     type: String,
     required: [true, 'field is required.'],
     validate: {
-      validator: function (email) {
+      validator: function (email: string) {
         return /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email);
       },
-      message: (props) => `${props.value} is not a valid email!`,
+      message: (props: { value: any }) => `${props.value} is not a valid email!`,
     },
   },
   userName: {
@@ -37,5 +37,5 @@ const bookingSchema = new mongoose.Schema({
   },
 });
 
-const Booking = mongoose.model('Booking', bookingSchema);
-module.exports = Booking;
+export const Booking = mongoose.model('Booking', bookingSchema);
+export default Booking;

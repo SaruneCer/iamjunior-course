@@ -1,6 +1,16 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
-const BusinessSchema = new mongoose.Schema(
+interface IBusiness {
+  name: string;
+  about?: string;
+  address: string;
+  category: string;
+  contactPerson: string;
+  email: string;
+  images: string[];
+}
+
+const BusinessSchema = new mongoose.Schema<IBusiness>(
   {
     name: {
       type: String,
@@ -39,8 +49,10 @@ const BusinessSchema = new mongoose.Schema(
   {
     versionKey: false,
     timestamps: true,
-  },
+  }
 );
 
-const Business = mongoose.model('Business', BusinessSchema);
-module.exports = Business;
+const Business = mongoose.model<IBusiness>('Business', BusinessSchema);
+
+export default Business;
+
