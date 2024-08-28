@@ -1,34 +1,57 @@
-import { FaScrewdriverWrench } from "react-icons/fa6";
-import { FaTruck } from "react-icons/fa6";
-import { FaBrush } from "react-icons/fa6";
-import { FaBucket } from "react-icons/fa6";
-import { FaLightbulb } from "react-icons/fa6";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import {
+  FaScrewdriverWrench,
+  FaTruck,
+  FaBrush,
+  FaBucket,
+  FaLightbulb,
+} from "react-icons/fa6";
 import { PiPipeFill } from "react-icons/pi";
 import { CategoryCard } from "./CategoryCard";
 import "../styles/categories_list.css";
 
-const categories = [
-  { name: "shifting", icon: FaTruck, color: "#e23e40" },
-  { name: "repair", icon: FaScrewdriverWrench, color: "#ecbb3a" },
-  { name: "plumbing", icon: PiPipeFill, color: "#ea9319" },
-  { name: "cleaning", icon: FaBucket, color: "#b12fde" },
-  { name: "painting", icon: FaBrush, color: "#059e96" },
-  { name: "electric", icon: FaLightbulb, color: "#1f71c5" },
-];
+const iconMapping = {
+  FaTruck: FaTruck,
+  FaScrewdriverWrench: FaScrewdriverWrench,
+  PiPipeFill: PiPipeFill,
+  FaBucket: FaBucket,
+  FaBrush: FaBrush,
+  FaLightbulb: FaLightbulb,
+};
 
 export function CategoriesList({ isHorizontal = true, activeCategory }) {
-    return (
-      <div className={`categories_list_container ${isHorizontal ? "horizontal" : "vertical"}`}>
-        {categories.map((category) => (
-          <CategoryCard
-            key={category.name}
-            category={category}
-            isHorizontal={isHorizontal}
-            isActive={activeCategory === category.name}
-          />
-        ))}
-      </div>
-    );
-  }
-  
-  
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/category")
+      .then((response) => {
+        const fetchedCategories = response.data.map((category) => ({
+          ...category,
+          icon: iconMapping[category.icon] || FaLightbulb,
+        }));
+        setCategories(fetchedCategories);
+      })
+      .catch((error) => {
+        console.error("Error fetching categories:", error);
+      });
+  }, []);
+
+  return (
+    <div
+      className={`categories_list_container ${
+        isHorizontal ? "horizontal" : "vertical"
+      }`}
+    >
+      {categories.map((category) => (
+        <CategoryCard
+          key={category._id}
+          category={category}
+          isHorizontal={isHorizontal}
+          isActive={activeCategory === category.name}
+        />
+      ))}
+    </div>
+  );
+}
