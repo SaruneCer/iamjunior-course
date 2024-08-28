@@ -1,5 +1,9 @@
 import mongoose from 'mongoose';
 
+interface IImage {
+  url: string;
+}
+
 interface IBusiness {
   name: string;
   about?: string;
@@ -7,7 +11,7 @@ interface IBusiness {
   category: string;
   contactPerson: string;
   email: string;
-  images: string[];
+  images: IImage[];
 }
 
 const BusinessSchema = new mongoose.Schema<IBusiness>(
@@ -41,8 +45,10 @@ const BusinessSchema = new mongoose.Schema<IBusiness>(
     },
     images: [
       {
-        type: String,
-        required: true,
+        url: {
+          type: String,
+          required: true,
+        },
       },
     ],
   },
@@ -55,4 +61,3 @@ const BusinessSchema = new mongoose.Schema<IBusiness>(
 const Business = mongoose.model<IBusiness>('Business', BusinessSchema);
 
 export default Business;
-

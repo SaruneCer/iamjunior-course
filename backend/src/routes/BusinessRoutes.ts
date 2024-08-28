@@ -1,10 +1,9 @@
 import express from 'express';
 import Business from '../schemas/Business';
-import authMiddleware from '../../src/middlewares/authMiddleware';
 
 const router = express.Router();
 
-router.get('/', authMiddleware, async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const businesses = await Business.find();
     res.json(businesses);
