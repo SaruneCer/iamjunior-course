@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import { Logout } from "./Logout";
 import "../styles/user_avatar.css"
@@ -19,10 +20,10 @@ export function UserAvatar({ children }) {
           <div className="dropdown-menu">
           <ul>
             <li>
-              <a href="/account">My Account</a>
+              <Link to="/account">My Account</Link>
             </li>
             <li>
-              <a href="/my-bookings">My Booking</a>
+              <Link to="/my-bookings">My Booking</Link>
             </li>
             <Logout />
           </ul>
