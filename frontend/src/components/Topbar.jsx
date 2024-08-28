@@ -6,6 +6,7 @@ import { Button } from "./Button";
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
 import { UserAvatar } from "./UserAvatar";
+import { Logout } from "./Logout";
 import "../styles/topbar.css";
 
 export function Topbar() {

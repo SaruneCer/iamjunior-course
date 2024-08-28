@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import { Logout } from "./Logout";
 import "../styles/user_avatar.css"
@@ -17,8 +18,16 @@ export function UserAvatar({ children }) {
   
         {isDropdownOpen && (
           <div className="dropdown-menu">
-            <Logout onClose={toggleDropdown} />
-          </div>
+          <ul>
+            <li>
+              <Link to="/account">My Account</Link>
+            </li>
+            <li>
+              <Link to="/my-bookings">My Booking</Link>
+            </li>
+            <Logout />
+          </ul>
+        </div>
         )}
       </div>
     );
