@@ -1,6 +1,5 @@
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
-import { Button } from "./Button";
 
 export function Logout({ onClose }) {
   const { logout } = useContext(UserContext);
@@ -11,8 +10,8 @@ export function Logout({ onClose }) {
   };
 
   return (
-    <div className="logout-modal">
-      <Button onClick={handleLogout} buttonText="Logout" />
-    </div>
+    <li onClick={handleLogout} style={{ cursor: 'pointer' }}>
+      Logout
+    </li>
   );
 }

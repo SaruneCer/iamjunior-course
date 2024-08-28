@@ -17,8 +17,16 @@ export function UserAvatar({ children }) {
   
         {isDropdownOpen && (
           <div className="dropdown-menu">
-            <Logout onClose={toggleDropdown} />
-          </div>
+          <ul>
+            <li>
+              <a href="/account">My Account</a>
+            </li>
+            <li>
+              <a href="/my-bookings">My Booking</a>
+            </li>
+            <Logout />
+          </ul>
+        </div>
         )}
       </div>
     );
