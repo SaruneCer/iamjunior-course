@@ -1,0 +1,25 @@
+.search_category_container {
+  display: flex;
+  gap: 32px;
+}
+
+.categories_list_title {
+  color: #9977ef;
+  margin-bottom: 32px;
+}
+
+.category_title {
+  text-transform: capitalize;
+  font-size: 22.4px;
+}
+
+.category_title {
+  font-size: 24px;
+  margin-bottom: 32px;
+}
+
+.search_category_container .service_list{
+  display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}

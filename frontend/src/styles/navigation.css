@@ -1,0 +1,22 @@
+nav {
+  display: flex;
+  gap: 24px;
+}
+
+.navigation_link {
+  font-size: 19.2px;
+  font-weight: 500;
+  color: #323232;
+}
+
+.navigation_link:hover {
+  text-decoration: underline;
+}
+
+a {
+  text-decoration: none;
+}
+
+.active_link {
+  text-decoration: underline;
+}

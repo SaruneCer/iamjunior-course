@@ -1,0 +1,29 @@
+.hero_container {
+  padding-top: 32px;
+  text-align: center;
+}
+
+.hero_title {
+  font-size: 56px;
+  line-height: 80px;
+  margin: 0;
+}
+
+.purple_text {
+  color: #8056eb;
+}
+
+.subtitle {
+  color: #a8a8a8;
+  padding: 16px;
+  font-size: 24px;
+  margin: 0;
+}
+
+.search_wrapper {
+  display: flex;
+  width: 30%;
+  margin: 32px auto;
+  gap: 16px;
+}
+

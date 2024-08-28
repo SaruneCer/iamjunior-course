@@ -1,0 +1,12 @@
+.categories_list_container.horizontal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 64px;
+}
+
+.categories_list_container.vertical {
+  display: flex;
+  flex-direction: column;
+}
