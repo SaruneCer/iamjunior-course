@@ -1,38 +1,20 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useBusiness } from "../customHooks/useBusiness";
 import { ServiceCard } from "./ServiceCard";
 import "../styles/service_list.css";
 
 export function ServiceList({ category }) {
-  const [businesses, setBusinesses] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    setLoading(true);
-    axios
-      .get("http://localhost:8080/business")
-      .then((response) => {
-        setBusinesses(response.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setError("Error fetching businesses");
-        setLoading(false);
-        console.error("Error fetching businesses:", error);
-      });
-  }, []);
+  const { data: businesses = [], isLoading, isError, error } = useBusiness();
 
   const filteredBusinesses = category
     ? businesses.filter((business) => business.category === category)
     : businesses;
 
-  if (loading) {
+  if (isLoading) {
     return <div>Loading...</div>;
   }
 
-  if (error) {
-    return <div>{error}</div>;
+  if (isError) {
+    return <div>Error: {error.message}</div>;
   }
 
   return (
