@@ -1,5 +1,5 @@
 .top_info_section {
-  padding: 10px 0px;
+  padding-bottom: 24px;
   display: flex;
   align-items: center;
 }
@@ -101,6 +101,10 @@
 .bottom_info_section .right_side_container .basic_button {
   width: 100%;
   padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
 
 .similar_business_container {
@@ -110,8 +114,11 @@
   align-items: flex-start;
 }
 
-
 .business_description {
   text-align: left;
   line-height: 1.8;
+}
+
+.basic_info_wrapper {
+  margin-top: 28px;
 }

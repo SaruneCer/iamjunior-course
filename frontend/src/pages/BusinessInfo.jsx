@@ -81,7 +81,7 @@ const BusinessInfo = () => {
           <Button
             buttonText={
               <>
-                <RxCalendar /> Book Appointment
+                <RxCalendar  className="business_info_icon"/> Book Appointment
               </>
             }
           />
