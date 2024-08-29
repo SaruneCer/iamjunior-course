@@ -1,17 +1,20 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, generatePath } from "react-router-dom";
+import { ROUTES } from "../router/pageRoutes"; 
 import "../styles/similar_business_card.css";
 
 const SimilarBusinessCard = ({ business }) => {
   const navigate = useNavigate();
 
   const handleCardClick = () => {
-    navigate(`/details/${business._id}`);
+    const businessDetailsPath = generatePath(ROUTES.BUSINESS_INFO, {
+      id: business._id,
+    });
+    navigate(businessDetailsPath);
   };
 
   return (
     <div className="similar_business_card" onClick={handleCardClick}>
       <div className="image_wrapper">
-        {" "}
         <img src={business.images[0].url} alt={business.name} />
       </div>
 

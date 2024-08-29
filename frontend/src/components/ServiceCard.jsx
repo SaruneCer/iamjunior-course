@@ -1,4 +1,5 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, generatePath } from "react-router-dom";
+import { ROUTES } from "../router/pageRoutes";
 import { Button } from "./Button";
 import "../styles/service_card.css";
 
@@ -6,7 +7,10 @@ export function ServiceCard({ business }) {
   const navigate = useNavigate();
 
   const handleCardClick = () => {
-    navigate(`/details/${business._id}`);
+    const businessDetailsPath = generatePath(ROUTES.BUSINESS_INFO, {
+      id: business._id,
+    });
+    navigate(businessDetailsPath);
   };
 
   const handleButtonClick = (event) => {
