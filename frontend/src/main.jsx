@@ -7,6 +7,7 @@ import { ROUTES } from "./router/pageRoutes.js";
 import { Error } from "./pages/Error.jsx";
 import { SearchCategory } from "./pages/SearchCategory.jsx";
 import { Login } from "./pages/Login.jsx";
+import { Register } from "./pages/Register.jsx";
 import BusinessInfo from "./pages/BusinessInfo.jsx";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
@@ -41,6 +42,10 @@ const router = createBrowserRouter([
       {
         path: ROUTES.BUSINESS_INFO,
         element: <BusinessInfo />,
+      },
+      {
+        path: ROUTES.REGISTER,
+        element: <Register />,
       },
     ],
   },
