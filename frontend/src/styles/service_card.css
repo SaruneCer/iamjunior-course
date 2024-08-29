@@ -5,6 +5,7 @@
   flex-direction: column;
   box-shadow: #00000026 1.95px 1.95px 2.6px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
 }
 .service_card:hover {
   transform: translateY(-10px);
@@ -45,7 +46,7 @@
   font-size: 17.6px;
 }
 
-.service_adress {
+.service_address {
   margin: 16px 0;
   color: #a8a8a8;
 }
