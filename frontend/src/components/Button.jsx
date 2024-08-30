@@ -1,6 +1,6 @@
 import "../styles/button.css";
 
-export function Button({ buttonText, onClick, isRound }) {
+export function Button({ buttonText, onClick, isRound, type = "button" }) {
   let className = "basic_button";
 
   if (isRound) {
@@ -8,7 +8,7 @@ export function Button({ buttonText, onClick, isRound }) {
   }
 
   return (
-    <button className={className} type="button" onClick={onClick}>
+    <button className={className} type={type} onClick={onClick}>
       {buttonText}
     </button>
   );

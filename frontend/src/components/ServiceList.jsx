@@ -8,8 +8,8 @@ export function ServiceList({ category }) {
     : businesses;
   return (
     <div className="service_list">
-      {filteredBusiness.map((business) => (
-        <ServiceCard key={business._id} business={business} />
+      {filteredBusiness.map((business, index) => (
+        <ServiceCard key={`${business._id}-${index}`} business={business} />
       ))}
     </div>
   );

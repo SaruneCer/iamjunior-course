@@ -12,34 +12,33 @@ export function Login() {
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-
+  
     const validationErrors = {};
-
-    if (!email) {
-      validationErrors.email = "Field is required";
-    }
-
-    if (!password) {
-      validationErrors.password = "Field is required";
-    }
-
+  
+    if (!email) validationErrors.email = "Field is required";
+    if (!password) validationErrors.password = "Field is required";
+  
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
-
+  
     setErrors({});
-
-    login({ email, password });
-    navigate(ROUTES.HOME);
-  };
+  
+    try {
+      await login({ email, password });
+      navigate(ROUTES.HOME);
+    } catch (error) {
+      setErrors({ general: 'Login failed. Please check your credentials and try again.' });
+    }
+  };     
 
   return (
     <div className="login_container">
       <div className="login_form_box">
-        <form className="login_form">
+        <form className="login_form" onSubmit={handleSubmit}>
           <h2 className="form_title">Login</h2>
           <div className="field_wrapper">
             <input
@@ -61,7 +60,8 @@ export function Login() {
             />
             {errors.password && <p className="error_message">{errors.password}</p>}
           </div>
-          <Button type="submit" buttonText="Log in" onClick={handleSubmit}/>
+          {errors.login && <p className="error_message">{errors.login}</p>}
+          <Button type="submit" buttonText="Log in" />
           <div className="signup_link_wrapper">
             <Link to={ROUTES.REGISTER} className="signup_link">
               Do not have an account? Sign up

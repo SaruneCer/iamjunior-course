@@ -7,6 +7,7 @@ import { ROUTES } from './router/pageRoutes.js';
 import { Error } from './pages/Error.jsx';
 import { SearchCategory } from './pages/SearchCategory.jsx';
 import { Login } from './pages/Login.jsx';
+import MyBookings from './pages/MyBookings.jsx';
 import ReactDOM from "react-dom/client";
 import App from './App.jsx'
 import './index.css'
@@ -14,31 +15,34 @@ import './index.css'
 const router = createBrowserRouter([{
   path: "/",
   element: <App />,
-  errorElement : <Error/>,
+  errorElement: <Error />,
   children: [
     {
-    path : ROUTES.HOME,
-      element: <Home/>
+      path : ROUTES.HOME,
+      element: <Home />
     },
     {
       path: ROUTES.ABOUT_US,
-      element : <AboutUs/>
+      element : <AboutUs />
     },
     {
       path: ROUTES.SERVICES,
-      element: <Services/>
+      element: <Services />
     },
     {
       path: ROUTES.SEARCH_CATEGORY,
-      element: <SearchCategory/>
+      element: <SearchCategory />
     },
     {
       path: ROUTES.LOGIN,
-      element: <Login/>
+      element: <Login />
+    },
+    {
+      path: ROUTES.BOOKINGS,
+      element: <MyBookings />
     }
   ]
-}])
-
+}]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

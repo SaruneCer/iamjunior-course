@@ -1,7 +1,4 @@
-import { useContext } from "react";
-import { UserContext } from "../context/UserContext";
-
-export function Logout({ onClose }) {
+export function Logout({ onClose = () => {} }) {
   const { logout } = useContext(UserContext);
 
   const handleLogout = () => {
