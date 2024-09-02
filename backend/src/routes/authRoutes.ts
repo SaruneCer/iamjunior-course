@@ -20,7 +20,7 @@ router.post('/register', async (req, res) => {
 
 router.post('/login', async (req, res) => {
   try {
-    const user = req.body;
+    const user = req.body as { email: string; password: string };
 
     const existingUser = await User.findOne({ email: user.email });
     if (!existingUser) {
@@ -32,7 +32,7 @@ router.post('/login', async (req, res) => {
       return res.status(404).json({ message: 'Invalid password' });
     }
 
-    const token = generateToken({ id: existingUser._id });
+    const token = generateToken({ id: existingUser._id, email: existingUser.email });
 
     return res.json({ message: 'Logged in', token, existingUser });
   } catch (error) {

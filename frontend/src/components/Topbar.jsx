@@ -1,9 +1,9 @@
+import React, { useContext, useState } from 'react';
 import Logo from "../assets/logo.svg";
 import { ROUTES } from "../router/pageRoutes";
 import { Link, useNavigate } from "react-router-dom";
 import { Navigation } from "./Navigation";
 import { Button } from "./Button";
-import { useContext, useState } from "react";
 import { UserContext } from "../context/UserContext";
 import { UserAvatar } from "./UserAvatar";
 import "../styles/topbar.css";
@@ -19,6 +19,7 @@ export function Topbar() {
 
   const handleLogout = () => {
     logout();
+    setIsDropdownOpen(false);
     navigate(ROUTES.HOME);
   };
 
@@ -34,7 +35,7 @@ export function Topbar() {
       <div className="button-avatar-wrapper">
         {user && user.email ? (
           <div className="avatar-dropdown-wrapper">
-            <UserAvatar onClick={handleAvatarClick}>
+            <UserAvatar toggleDropdown={handleAvatarClick}>
               {user.email[0]}
             </UserAvatar>
             {isDropdownOpen && (

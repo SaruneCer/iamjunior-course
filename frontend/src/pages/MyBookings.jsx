@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import '../styles/mybookings.css';
 
 function MyBookings() {
   const [bookings, setBookings] = useState([]);
@@ -6,9 +7,10 @@ function MyBookings() {
   useEffect(() => {
     const fetchBookings = async () => {
       try {
-        const response = await fetch('/api/bookings/user', {
+        const response = await fetch('http://localhost:8080/booking/user-bookings', {
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json'
           }
         });
         if (response.ok) {
@@ -26,16 +28,25 @@ function MyBookings() {
   }, []);
 
   return (
-    <div>
+    <div className="my-bookings-container">
       <h1>My Bookings</h1>
       {bookings.length > 0 ? (
-        <ul>
+        <div className="bookings-list">
           {bookings.map(booking => (
-            <li key={booking._id}>
-              {booking.service} - {booking.date}
-            </li>
+            <div className="booking-card" key={booking._id}>
+              <img 
+                src={booking.businessId.images[0]?.url} 
+                alt={`${booking.businessId.name} image`} 
+                className="booking-image"
+              />
+              <h2>{booking.businessId.name}</h2>
+              <p><strong>Location:</strong> {booking.businessId.address}</p>
+              <p><strong>Service on:</strong> {new Date(booking.date).toLocaleDateString()}</p>
+              <p><strong>Time:</strong> {booking.time}</p>
+              <p><strong>Status:</strong> {booking.status}</p>
+            </div>
           ))}
-        </ul>
+        </div>
       ) : (
         <p>No bookings found</p>
       )}

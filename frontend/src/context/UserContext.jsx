@@ -21,7 +21,7 @@ const UserProvider = ({ children }) => {
       }
   
       const data = await response.json();
-      setUser(data);
+      setUser(data.existingUser);
       localStorage.setItem('token', data.token);
       return data;
     } catch (error) {

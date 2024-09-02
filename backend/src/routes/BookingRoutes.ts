@@ -1,5 +1,6 @@
 import express from 'express';
 import Booking from '../schemas/Booking';
+import Business from '../schemas/Business';
 import authMiddleware from '../middlewares/authMiddleware';
 
 const router = express.Router();
@@ -17,12 +18,16 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.get('/user/:email', async (req, res) => {
+router.get('/user-bookings', authMiddleware, async (req, res) => {
   try {
-    const userBookings = await Booking.find({ userEmail: req.params.email });
-    if (userBookings.length === 0) {
+    const userEmail = req.currentUser?.email.toLowerCase();
+    const userBookings = await Booking.find({ userEmail: new RegExp(`^${userEmail}$`, 'i') })
+      .populate('businessId')
+
+    if (!userBookings || userBookings.length === 0) {
       return res.status(404).json({ message: 'No bookings found for this user' });
     }
+
     res.json(userBookings);
   } catch (error) {
     res.status(500).json({
