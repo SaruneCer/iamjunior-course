@@ -1,4 +1,5 @@
 import { createContext } from "react";
+import axiosInstance from '../utils/axiosInstance';
 import useLocalStorage from "use-local-storage";
 
 const UserContext = createContext(null);
@@ -8,27 +9,15 @@ const UserProvider = ({ children }) => {
 
   const login = async (userData) => {
     try {
-      const response = await fetch('http://localhost:8080/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-      });
-  
-      if (!response.ok) {
-        throw new Error('Login failed');
-      }
-  
-      const data = await response.json();
-      setUser(data.existingUser);
-      localStorage.setItem('token', data.token);
-      return data;
+      const response = await axiosInstance.post('/auth/login', userData);
+      setUser(response.data.existingUser);
+      localStorage.setItem('token', response.data.token);
+      return response.data;
     } catch (error) {
       console.error('Login error:', error);
       throw error;
     }
-  };  
+  };
   
   const logout = () => {
     setUser(null);

@@ -41,8 +41,12 @@ export function Topbar() {
             {isDropdownOpen && (
               <div className="avatar-dropdown-menu">
                 <ul>
-                  <li onClick={() => navigate(ROUTES.ACCOUNT)}>My Account</li>
-                  <li onClick={() => navigate(ROUTES.BOOKINGS)}>My Bookings</li>
+                  <li>
+                    <Link to={ROUTES.ACCOUNT}>My Account</Link>
+                  </li>
+                  <li>
+                    <Link to={ROUTES.BOOKINGS}>My Bookings</Link>
+                  </li>
                   <li onClick={handleLogout}>Logout</li>
                 </ul>
               </div>
