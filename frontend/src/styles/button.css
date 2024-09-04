@@ -24,13 +24,3 @@
   font-size: 24px;
 }
 
-.cancel_button {
-  border: 1px solid #8056eb;
-  color: #8056eb;
-  background-color: white;
-}
-
-.cancel_button:hover {
-  background-color: #5b24e7;
-  color: white;
-}

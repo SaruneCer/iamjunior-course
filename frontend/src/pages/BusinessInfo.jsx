@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useBusiness } from "../customHooks/useBusiness";
 import { LuUpload } from "react-icons/lu";
@@ -9,13 +9,11 @@ import { RxCalendar } from "react-icons/rx";
 import SimilarBusinessCard from "../components/SimilarBusinessCard";
 import { SlLocationPin } from "react-icons/sl";
 import { LuMail } from "react-icons/lu";
-import BookingModal from "../components/BookingModal";
 import "../styles/business_info.css";
 
 const BusinessInfo = () => {
   const { id } = useParams();
   const { data: businesses = [], isLoading, isError, error } = useBusiness();
-  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -38,14 +36,6 @@ const BusinessInfo = () => {
   if (!business) {
     return <div>Business not found.</div>;
   }
-
-  const openBookingModal = () => {
-    setIsBookingModalOpen(true);
-  };
-
-  const closeBookingModal = () => {
-    setIsBookingModalOpen(false);
-  };
 
   return (
     <main>
@@ -91,17 +81,10 @@ const BusinessInfo = () => {
           <Button
             buttonText={
               <>
-                <RxCalendar className="business_info_icon" /> Book Appointment
+                <RxCalendar  className="business_info_icon"/> Book Appointment
               </>
             }
-            onClick={openBookingModal}
           />
-          <BookingModal
-            isOpen={isBookingModalOpen}
-            onClose={closeBookingModal}
-            business={business}
-          />
-
           <div className="similar_business_container">
             <h3>Similar Businesses</h3>
             <div className="similar_business_list_wrapper">
