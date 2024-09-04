@@ -1,14 +1,22 @@
 import "../styles/button.css";
 
-export function Button({ buttonText, onClick, isRound, type = "button" }) {
-  let className = "basic_button";
+export function Button({
+  buttonText,
+  onClick,
+  isRound,
+  type = "button",
+  className = "",
+}) {
+  let baseClassName = "basic_button";
 
   if (isRound) {
-    className += " round_button";
+    baseClassName += " round_button";
   }
 
+  const combinedClassName = `${baseClassName} ${className}`.trim();
+
   return (
-    <button className={className} type={type} onClick={onClick}>
+    <button className={combinedClassName} type={type} onClick={onClick}>
       {buttonText}
     </button>
   );

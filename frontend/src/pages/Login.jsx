@@ -1,74 +1,92 @@
-import { Button } from "../components/Button";
-import { Link, useNavigate } from "react-router-dom";
-import { ROUTES } from "../router/pageRoutes";
 import { useContext, useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Form, Formik } from "formik";
+import { ROUTES } from "../router/pageRoutes";
+import { Button } from "../components/Button";
 import { UserContext } from "../context/UserContext";
+import FormikField from "../components/FormikField";
+import { useLoginUser } from "../customHooks/useLoginUser";
+import * as Yup from "yup";
 import "../styles/login.css";
+
+const loginInitialValues = {
+  email: "",
+  password: "",
+};
+
+const loginValidationSchema = Yup.object({
+  email: Yup.string()
+    .email("Invalid email address")
+    .required("Field is required"),
+  password: Yup.string().required("Field is required"),
+});
 
 export function Login() {
   const { login } = useContext(UserContext);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState({});
+  const [error, setError] = useState("");
+  const { mutateAsync: loginUser } = useLoginUser();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const handleSubmit = async (formValues) => {
+    try {
+      const response = await loginUser(formValues);
+      const { token, existingUser } = response;
 
-    const validationErrors = {};
+      if (token && existingUser) {
+        localStorage.setItem("token", token);
+        login(existingUser);
 
-    if (!email) {
-      validationErrors.email = "Field is required";
+        if (location.state?.fromBookingModal) {
+          navigate(-1, { state: location.state });
+        } else {
+          navigate(ROUTES.HOME);
+        }
+      } else {
+        throw new Error("Unexpected response format");
+      }
+    } catch (error) {
+      const errorMessage =
+        error?.response?.data?.message ?? "An unexpected error occurred";
+      console.error(errorMessage);
+      setError(errorMessage);
     }
-
-    if (!password) {
-      validationErrors.password = "Field is required";
-    }
-
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
-
-    setErrors({});
-
-    login({ email, password });
-    navigate(ROUTES.HOME);
   };
 
   return (
     <div className="login_container">
-      <div className="login_form_box">
-        <form className="login_form">
+      <Formik
+        initialValues={loginInitialValues}
+        validationSchema={loginValidationSchema}
+        onSubmit={handleSubmit}
+      >
+        <Form className="login_form">
           <h2 className="form_title">Login</h2>
           <div className="field_wrapper">
-            <input
+            <FormikField
+              name="email"
               type="email"
               placeholder="Email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
               className="form_input"
             />
-            {errors.email && <p className="error_message">{errors.email}</p>}
           </div>
           <div className="field_wrapper">
-            <input
+            <FormikField
+              name="password"
               type="password"
               placeholder="Password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
               className="form_input"
             />
-            {errors.password && <p className="error_message">{errors.password}</p>}
           </div>
-          <Button type="submit" buttonText="Log in" onClick={handleSubmit}/>
+          {error && <p className="error_message">{error}</p>}
+          <Button type="submit" buttonText="Log in" />
           <div className="signup_link_wrapper">
             <Link to={ROUTES.REGISTER} className="signup_link">
               Do not have an account? Sign up
             </Link>
           </div>
-        </form>
-      </div>
+        </Form>
+      </Formik>
     </div>
   );
 }

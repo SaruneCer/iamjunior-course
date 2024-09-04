@@ -3,8 +3,29 @@ import Booking from '../schemas/Booking';
 
 const router = express.Router();
 
+router.get('/', async (req, res) => {
+  try {
+    const bookings = await Booking.find();
+    res.json(bookings);
+  } catch (err) {
+    res.status(400).json({ message: 'Error fetching bookings for the user', error: err });
+  }
+});
+
+router.get('/:businessId', async (req, res) => {
+  try {
+    const { businessId } = req.params;
+
+    const bookings = await Booking.find({ businessId });
+    res.json(bookings);
+  } catch (err) {
+    res.status(400).json({ message: 'Error fetching bookings', error: err });
+  }
+});
+
 router.post('/', async (req, res) => {
   const newBooking = new Booking(req.body);
+  console.log(newBooking);
   try {
     const savedBooking = await newBooking.save();
     res.status(201).json(savedBooking);
