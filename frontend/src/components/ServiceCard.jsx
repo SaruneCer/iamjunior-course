@@ -15,6 +15,10 @@ export function ServiceCard({ business }) {
 
   const handleButtonClick = (event) => {
     event.stopPropagation();
+    const businessDetailsPath = generatePath(ROUTES.BUSINESS_INFO, {
+      id: business._id,
+    }) + "?openBookingModal=true";
+    navigate(businessDetailsPath);
   };
 
   return (
@@ -26,7 +30,7 @@ export function ServiceCard({ business }) {
         <h3 className="service_title">{business.name}</h3>
         <p className="service_contact_person">{business.contactPerson}</p>
         <p className="service_address">{business.address}</p>
-        <Button buttonText={"Book now"} onClick={handleButtonClick} />
+        <Button buttonText="Book now" onClick={handleButtonClick} />
       </div>
     </div>
   );

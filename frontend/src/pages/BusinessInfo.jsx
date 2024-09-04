@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { useBusiness } from "../customHooks/useBusiness";
 import { LuUpload } from "react-icons/lu";
 import { LuUser } from "react-icons/lu";
@@ -14,12 +14,20 @@ import "../styles/business_info.css";
 
 const BusinessInfo = () => {
   const { id } = useParams();
+  const location = useLocation();
   const { data: businesses = [], isLoading, isError, error } = useBusiness();
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [id]);
+
+    const queryParams = new URLSearchParams(location.search);
+    const openBookingModal = queryParams.get("openBookingModal") === "true";
+
+    if (location.state?.fromBookingModal || openBookingModal) {
+      setIsBookingModalOpen(true);
+    }
+  }, [location.search, location.state]);
 
   const business = businesses.find((business) => business._id === id);
 

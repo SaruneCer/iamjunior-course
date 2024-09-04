@@ -7,11 +7,12 @@ const fetchBookings = async (businessId) => {
   );
   return response.data;
 };
-
-export const useBookings = (businessId) => {
+const useBookings = (businessId) => {
   return useQuery({
     queryKey: ["bookings", businessId],
     queryFn: () => fetchBookings(businessId),
     enabled: !!businessId,
   });
 };
+
+export default useBookings

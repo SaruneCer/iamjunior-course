@@ -1,35 +1,24 @@
-import { useState, useContext, useMemo, useEffect } from "react";
-import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import { useBookings } from "../customHooks/useBookings";
+import { useContext, useMemo, useEffect, useState } from "react";
+import { Formik, Form, ErrorMessage } from "formik";
+import useBookings from "../customHooks/useBookings";
 import useCreateBooking from "../customHooks/useCreateBooking";
 import { UserContext } from "../context/UserContext";
 import { AlertModal } from "../components/AlertModal";
-import { ROUTES } from "../router/pageRoutes";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/Button";
 import { useQueryClient } from "@tanstack/react-query";
+import { format } from "date-fns";
+import {
+  createLoginAlertConfig,
+  createSuccessAlertConfig,
+  createErrorAlertConfig,
+} from "../utils/alertUtils";
 import "../styles/booking_modal.css";
-
-const convertTo24Hour = (time) => {
-  const [hour, minute] = time.split(":");
-  const period = hour.match(/AM|PM$/) ? hour.match(/AM|PM$/)[0] : "AM";
-  let hour24 = parseInt(hour, 10);
-  if (period === "PM" && hour24 < 12) hour24 += 12;
-  if (period === "AM" && hour24 === 12) hour24 = 0;
-  return `${hour24.toString().padStart(2, "0")}:${minute || "00"}`;
-};
-
-const convertTo12Hour = (time) => {
-  const [hour, minute] = time.split(":");
-  let hourInt = parseInt(hour, 10);
-  const period = hourInt >= 12 ? "PM" : "AM";
-  if (hourInt > 12) hourInt -= 12;
-  if (hourInt === 0) hourInt = 12;
-  return `${hourInt}:${minute} ${period}`;
-};
+import FormikDatePicker from "../components/FormikDatePicker";
+import { getAvailableTimes, getBookedTimes } from "../utils/calendarUtils";
+import { convertTo12Hour } from "../utils/timeUtils";
+import { bookingValidationSchema } from "../validations/bookingValidationSchema";
+import useLocalStorage from "use-local-storage";
 
 const BookingModal = ({ isOpen, onClose, business, bookingDetails }) => {
   const { user } = useContext(UserContext);
@@ -41,8 +30,12 @@ const BookingModal = ({ isOpen, onClose, business, bookingDetails }) => {
   } = useCreateBooking();
   const navigate = useNavigate();
 
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedTime, setSelectedTime] = useState("");
+  const [selectedDate, setSelectedDate] = useLocalStorage(
+    "selectedDate",
+    new Date().toISOString()
+  );
+  const [selectedTime, setSelectedTime] = useLocalStorage("selectedTime", "");
+
   const [alertModal, setAlertModal] = useState({
     isOpen: false,
     message: "",
@@ -51,10 +44,10 @@ const BookingModal = ({ isOpen, onClose, business, bookingDetails }) => {
 
   useEffect(() => {
     if (bookingDetails) {
-      setSelectedDate(new Date(bookingDetails.date));
+      setSelectedDate(new Date(bookingDetails.date).toISOString());
       setSelectedTime(bookingDetails.time);
     }
-  }, [bookingDetails]);
+  }, [bookingDetails, setSelectedDate, setSelectedTime]);
 
   const businessId = business?._id;
 
@@ -67,67 +60,37 @@ const BookingModal = ({ isOpen, onClose, business, bookingDetails }) => {
   const availableTimes = useMemo(() => {
     if (!business) return [];
     const { workStart, workEnd } = business;
-    const startTime = new Date(`1970-01-01T${convertTo24Hour(workStart)}`);
-    const endTime = new Date(`1970-01-01T${convertTo24Hour(workEnd)}`);
-    const slots = [];
-
-    while (startTime <= endTime) {
-      slots.push(startTime.toTimeString().slice(0, 5));
-      startTime.setMinutes(startTime.getMinutes() + 30);
-    }
-
-    return slots;
+    return getAvailableTimes(workStart, workEnd);
   }, [business]);
 
   const bookedTimes = useMemo(() => {
-    const selectedDateString = selectedDate.toISOString().split("T")[0];
-    return bookings
-      .filter(
-        (booking) =>
-          new Date(booking.date).toISOString().split("T")[0] ===
-          selectedDateString
-      )
-      .map((booking) => booking.time);
+    return getBookedTimes(bookings, new Date(selectedDate));
   }, [bookings, selectedDate]);
 
-  const validationSchema = Yup.object({
-    time: Yup.string().required("Please select a time slot"),
-  });
-
-  if (!isOpen) return null;
-  if (isBookingsLoading) return <p>Loading...</p>;
-  if (isBookingsError)
+  if (!isOpen) {
+    return null;
+  }
+  if (isBookingsLoading) {
+    return <p>Loading...</p>;
+  }
+  if (isBookingsError) {
     return <p>Error: {error?.message || "Failed to fetch bookings"}</p>;
+  }
 
   const handleSubmit = async (values, { setSubmitting }) => {
     if (!user) {
-      setAlertModal({
-        isOpen: true,
-        message: "Please log in to make a booking.",
-        buttons: [
-          {
-            label: "Log In",
-            onClick: () => {
-              navigate(ROUTES.LOGIN, {
-                state: { fromBookingModal: true, bookingDetails: values },
-              });
-              setAlertModal({ ...alertModal, isOpen: false });
-            },
-          },
-          {
-            label: "Cancel",
-            className: "cancel_button",
-            onClick: () => setAlertModal({ ...alertModal, isOpen: false }),
-          },
-        ],
-      });
+      setAlertModal(
+        createLoginAlertConfig(navigate, values, () =>
+          setAlertModal({ ...alertModal, isOpen: false })
+        )
+      );
       setSubmitting(false);
       return;
     }
 
     const bookingData = {
       businessId,
-      date: new Date(values.date),
+      date: format(new Date(values.date), "yyyy-MM-dd"),
       time: values.time,
       userName: user.name,
       userEmail: user.email,
@@ -137,32 +100,16 @@ const BookingModal = ({ isOpen, onClose, business, bookingDetails }) => {
     createBooking(bookingData, {
       onSuccess: () => {
         queryClient.invalidateQueries(["bookings", businessId]);
-        setAlertModal({
-          isOpen: true,
-          message: "Booking successful!",
-          buttons: [
-            {
-              label: "OK",
-              onClick: () => {
-                setAlertModal({ ...alertModal, isOpen: false });
-                onClose();
-              },
-            },
-          ],
-        });
+        setAlertModal(
+          createSuccessAlertConfig(() => {
+            setAlertModal({ ...alertModal, isOpen: false });
+            onClose();
+          })
+        );
         setSubmitting(false);
       },
       onError: (err) => {
-        setAlertModal({
-          isOpen: true,
-          message: err.message || "Failed to create booking. Please try again.",
-          buttons: [
-            {
-              label: "OK",
-              onClick: () => setAlertModal({ ...alertModal, isOpen: false }),
-            },
-          ],
-        });
+        setAlertModal(createErrorAlertConfig(err.message));
         console.error(err);
         setSubmitting(false);
       },
@@ -188,31 +135,23 @@ const BookingModal = ({ isOpen, onClose, business, bookingDetails }) => {
           </p>
           <Formik
             initialValues={{
-              date: selectedDate.toISOString().split("T")[0],
-              time: "",
+              date: format(new Date(selectedDate), "yyyy-MM-dd"),
+              time: selectedTime,
             }}
-            validationSchema={validationSchema}
+            validationSchema={bookingValidationSchema}
             onSubmit={handleSubmit}
           >
             {({ setFieldValue, isSubmitting }) => (
               <Form>
                 <div className="form-group">
                   <label className="booking_modal_label">Select Date</label>
-                  <Field name="date">
-                    {({ field }) => (
-                      <Calendar
-                        {...field}
-                        onChange={(date) => {
-                          setSelectedDate(date);
-                          setFieldValue(
-                            "date",
-                            date.toISOString().split("T")[0]
-                          );
-                        }}
-                        value={new Date(field.value)}
-                      />
-                    )}
-                  </Field>
+                  <FormikDatePicker
+                    selectedDate={new Date(selectedDate)}
+                    setSelectedDate={(date) =>
+                      setSelectedDate(date.toISOString())
+                    }
+                    setFieldValue={setFieldValue}
+                  />
                 </div>
                 <div className="form-group">
                   <label className="booking_modal_label">

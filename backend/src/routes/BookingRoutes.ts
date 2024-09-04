@@ -25,7 +25,6 @@ router.get('/:businessId', async (req, res) => {
 
 router.post('/', async (req, res) => {
   const newBooking = new Booking(req.body);
-  console.log(newBooking);
   try {
     const savedBooking = await newBooking.save();
     res.status(201).json(savedBooking);

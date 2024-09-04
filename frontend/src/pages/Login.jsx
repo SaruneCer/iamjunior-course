@@ -6,20 +6,13 @@ import { Button } from "../components/Button";
 import { UserContext } from "../context/UserContext";
 import FormikField from "../components/FormikField";
 import { useLoginUser } from "../customHooks/useLoginUser";
-import * as Yup from "yup";
+import { loginValidationSchema } from "../validations/loginValidationSchema";
 import "../styles/login.css";
 
 const loginInitialValues = {
   email: "",
   password: "",
 };
-
-const loginValidationSchema = Yup.object({
-  email: Yup.string()
-    .email("Invalid email address")
-    .required("Field is required"),
-  password: Yup.string().required("Field is required"),
-});
 
 export function Login() {
   const { login } = useContext(UserContext);
@@ -38,7 +31,9 @@ export function Login() {
         login(existingUser);
 
         if (location.state?.fromBookingModal) {
-          navigate(-1, { state: location.state });
+          navigate(-1, {
+            state: { fromBookingModal: true, businessId: location.state.businessId },
+          });
         } else {
           navigate(ROUTES.HOME);
         }
