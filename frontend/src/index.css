@@ -13,7 +13,3 @@ main {
   min-height: 650px;
   padding: 64px;
 }
-
-.close:hover {
-  color: red;
-}
