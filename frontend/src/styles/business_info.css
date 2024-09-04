@@ -1,0 +1,127 @@
+.top_info_section {
+  padding-bottom: 24px;
+  display: flex;
+  align-items: center;
+}
+
+.left_side_container {
+  width: 70%;
+  display: flex;
+  align-items: center;
+}
+
+.right_side_container {
+  width: 30%;
+}
+
+.left_side_container .image_wrapper {
+  width: 200px;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 50%;
+  margin: 25px;
+}
+
+.left_side_container .image_wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.left_side_container .service_category_title {
+  display: inline;
+  font-size: 20px;
+}
+
+.business_info_icon {
+  font-size: 20px;
+  margin-right: 8px;
+}
+
+.left_side_container .service_address {
+  display: flex;
+  align-items: center;
+}
+
+.right_side_container {
+  display: flex;
+  align-items: end;
+  flex-direction: column;
+}
+
+.contact_person_wrapper,
+.working_hours_wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.contact_person_wrapper {
+  color: #8056eb;
+  font-size: 18px;
+  margin: 12px 0;
+}
+
+.contact_person_wrapper p,
+.working_hours_wrapper p {
+  margin: 0;
+}
+
+.working_hours_wrapper {
+  font-size: 18px;
+  margin: 12px 0;
+  color: #a8a8a8;
+}
+
+.button_icon {
+  font-size: 20px;
+}
+
+.top_info_section .right_side_container .basic_button {
+  padding: 6px 12px;
+}
+
+.bottom_info_section {
+  padding: 10px 0px;
+  display: flex;
+  align-items: flex-start;
+  gap: 40px;
+}
+
+.description_header {
+  font-size: 24px;
+  margin: 0;
+  margin-bottom: 18px;
+}
+
+.bottom_info_section .right_side_container {
+  align-items: center;
+  justify-items: center;
+}
+
+.bottom_info_section .right_side_container .basic_button {
+  width: 100%;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.similar_business_container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.business_description {
+  text-align: left;
+  line-height: 1.8;
+}
+
+.basic_info_wrapper {
+  margin-top: 28px;
+}
+.similar_business_list_wrapper{
+  width: 100%;
+}
